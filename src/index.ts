@@ -1,28 +1,23 @@
 require("dotenv").config();
+
 import { ethers } from "ethers";
-import { ethToTokens } from "./utils/ethToTokens";
+import { borrowFiatStableCoin } from "./utils/borrow-fiat-stable-coin";
+import { depositCryptoMoneyToAave } from "./utils/deposit-crypto-money-to-aave";
+import { ensureEnvironmentIsReasonablyConfigured } from "./utils/ensure-environment-reasonably-configured";
+import { isAnInvestmentRoundReasonable } from "./utils/is-an-investment-round-reasonable";
+import { swapFiatStableCoinToEth } from "./utils/swap-fiat-stable-coin-to-eth";
 
-if (process.env.ACCOUNT === undefined || process.env.ACCOUNT.length < 10) {
-  throw new Error(
-    `Please copy the .env.example file to .env and add your data for the wallet you want to optimize.`
-  );
-} else {
-  console.log(
-    `optimizing crypto investments for wallet: ${process.env.ACCOUNT} on a regular basis`
-  );
-}
 
-const provider = new ethers.providers.InfuraProvider(
-  "mainnet",
-  process.env.INFURA_PROJECT_ID
-);
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+ensureEnvironmentIsReasonablyConfigured()
+
+
+const provider = getInfuraProvider()
+const ethersWallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
 
 setInterval(async () => {
-  if (await isAnotherInvestmentRoundReasonable()) {
-    await borrowUSDollarStableCoin();
-    await swapUSDollarStableCoinToCryptoMoney();
-    await depositCryptoMoneyToAave();
+  if (await isAnInvestmentRoundReasonable()) {
+    await executeInvestmentRound()
   } else {
     console.log(
       "At the moment it does not make sense to trigger another investment round."
@@ -30,31 +25,17 @@ setInterval(async () => {
   }
 }, 1000 * 5);
 
-async function isAnotherInvestmentRoundReasonable() {
-  console.log(
-    "checking if another investment round is economically reasonable"
+
+async function executeInvestmentRound(): Promise<void> {
+  await borrowFiatStableCoin();
+  await swapFiatStableCoinToEth("DAI", 1, ethersWallet);
+  await depositCryptoMoneyToAave();
+}
+
+
+function getInfuraProvider() {
+  return new ethers.providers.InfuraProvider(
+    "mainnet",
+    process.env.INFURA_PROJECT_ID
   );
-  // if (transactionFeesForNextRound > 10 % of the transaction amount || health factor (see aave.com) < 1.14) {
-  //     ... return false
-  //   } else {
-  //     ... return true
-  //   }
-
-  return Promise.resolve(true);
-}
-
-async function borrowUSDollarStableCoin() {
-  console.log("borrowing US Dollar stable coin");
-}
-
-async function swapUSDollarStableCoinToCryptoMoney() {
-  console.log("swapping USDollarStableCoin to ETH");
-
-  const receipt = await ethToTokens("USDC", 0.01, wallet);
-  console.log('here we are')
-  console.log(receipt);
-}
-
-async function depositCryptoMoneyToAave() {
-  console.log("depositing crypto money to aave.com");
 }
