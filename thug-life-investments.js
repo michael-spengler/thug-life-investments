@@ -9,30 +9,39 @@ if (process.env.ACCOUNT === undefined || process.env.ACCOUNT.length < 10) {
 
 setInterval(async () => {
     
-    await checkIfAnotherRoundIsReasonable()
-    await borrowUSDC()
-    await swapDAIToETH()
-    await depositETHToAave()
+    if (await isAnotherInvestmentRoundReasonable()) {
+
+        await borrowUSDollarStableCoin()
+        await swapUSDollarStableCoinToCryptoMoney()
+        await depositCryptoMoneyToAave()
+
+    } else {
+
+        console.log('At the moment it does not make sense to trigger another investment round.')
+
+    }
 
 }, 1000 * 5)
 
 
 
-async function checkIfAnotherRoundIsReasonable() {
+async function isAnotherInvestmentRoundReasonable() {
     console.log('checking if another investment round is economically reasonable')
     // if (transactionFeesForNextRound > 10 % of the transaction amount || health factor (see aave.com) < 1.14) {
-    //     sleep some minutes and check again
+    //     ... return false
     //   } else {
-    //     Repeat steps 3 - 6
+    //     ... return true
     //   }
+
+    return Promise.resolve(true)
 }
 
-async function borrowUSDC() {
-    console.log('borrowing')
+async function borrowUSDollarStableCoin() {
+    console.log('borrowing US Dollar stable coin')
 }
 
-async function swapDAIToETH() {
-    console.log('swapping USDC to ETH')
+async function swapUSDollarStableCoinToCryptoMoney() {
+    console.log('swapping USDollarStableCoin to ETH')
 
     const DAI = new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18)
 
@@ -45,11 +54,8 @@ async function swapDAIToETH() {
 
     // const trade = new Trade(route, new TokenAmount(WETH[DAI.chainId], amountIn), TradeType.EXACT_INPUT)
 
-
-    
-
 }
 
-async function depositETHToAave() {
-    console.log('deposit ETH to Aave')
+async function depositCryptoMoneyToAave() {
+    console.log('depositing crypto money to aave.com')
 }
