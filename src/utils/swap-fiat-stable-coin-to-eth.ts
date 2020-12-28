@@ -13,12 +13,22 @@ import { ethers } from "ethers";
 import tokens from "../constants/tokens.json";
 import contracts from "../constants/contracts.json";
 
-export const swapStableCoinToEth = async (
+export const swapFiatStableCoinToEth = async (
   stableCoinSymbol: "DAI" | "USDC",
   amount: number,
   wallet: ethers.Wallet
-): Promise<string> => {
+): Promise<any | undefined> => {
+  console.log("swapping Fiat Stable Coin to ETH");
+  console.log('stableCoinSymbol')
+  console.log(stableCoinSymbol)
+  console.log('amount')
+  console.log(amount)
   const fixedAmount = ethers.utils.parseEther(amount.toString());
+
+  console.log('fixedAmount')
+  console.log(fixedAmount)
+  console.log('wallet.address')
+  console.log(wallet.address)
 
   const stableCoinToken = new Token(ChainId.MAINNET, tokens[stableCoinSymbol].address, 18);
 
@@ -53,32 +63,35 @@ export const swapStableCoinToEth = async (
   ]);
   const uniswapContractWithSigner = uniswapContract.connect(wallet);
 
-  const estimateGas = await uniswapContractWithSigner.estimateGas.swapExactETHForTokens(
-    amountOutMinBigNumber.toHexString(),
-    path,
-    await wallet.getAddress(),
-    deadline,
-    {
-      value: inputAmountBigNumber.toHexString(),
-    }
-  );
+  console.log('amountOutMinBigNumber')
+  console.log(amountOutMinBigNumber)
+  // const estimateGas = await uniswapContractWithSigner.estimateGas.swapExactETHForTokens(
+  //   amountOutMinBigNumber.toHexString(),
+  //   path,
+  //   await wallet.getAddress(),
+  //   deadline,
+  //   {
+  //     value: inputAmountBigNumber.toHexString(),
+  //   }
+  // );
 
   
-  const tx = await uniswapContractWithSigner.swapExactETHForTokens(
-    amountOutMinBigNumber.toHexString(),
-    path,
-    await wallet.getAddress(),
-    deadline,
-    {
-      gasPrice: await wallet.getGasPrice(),
-      gasLimit: estimateGas.mul(ethers.BigNumber.from("2")),
-      value: inputAmountBigNumber.toHexString(),
-    }
-  );
+  // const tx = await uniswapContractWithSigner.swapExactETHForTokens(
+  //   amountOutMinBigNumber.toHexString(),
+  //   path,
+  //   await wallet.getAddress(),
+  //   deadline,
+  //   {
+  //     gasPrice: await wallet.getGasPrice(),
+  //     gasLimit: estimateGas.mul(ethers.BigNumber.from("2")),
+  //     value: inputAmountBigNumber.toHexString(),
+  //   }
+  // );
 
-  console.log(tx.hash);
+  // console.log(tx.hash);
 
-  const receipt = await tx.wait();
-  console.log(receipt.blockNumber, tx.hash);
-  return receipt;
+  // const receipt = await tx.wait();
+  // console.log(receipt.blockNumber, tx.hash);
+  // return receipt;
+
 };

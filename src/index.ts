@@ -1,6 +1,10 @@
 require("dotenv").config();
+
 import { ethers } from "ethers";
-import { swapStableCoinToEth } from "./utils/swap-stable-coin-to-eth";
+import { borrowFiatStableCoin } from "./utils/borrow-fiat-stable-coin";
+import { depositCryptoMoneyToAave } from "./utils/deposit-crypto-money-to-aave";
+import { isAnInvestmentRoundReasonable } from "./utils/is-an-investment-round-reasonable";
+import { swapFiatStableCoinToEth } from "./utils/swap-fiat-stable-coin-to-eth";
 
 if (process.env.ACCOUNT === undefined || process.env.ACCOUNT.length < 10) {
   throw new Error(
@@ -19,9 +23,9 @@ const provider = new ethers.providers.InfuraProvider(
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 setInterval(async () => {
-  if (await isAnotherInvestmentRoundReasonable()) {
-    await borrowUSDollarStableCoin();
-    await swapUSDollarStableCoinToCryptoMoney();
+  if (await isAnInvestmentRoundReasonable()) {
+    await borrowFiatStableCoin();
+    await swapFiatStableCoinToEth("DAI", 1, wallet);
     await depositCryptoMoneyToAave();
   } else {
     console.log(
@@ -30,31 +34,3 @@ setInterval(async () => {
   }
 }, 1000 * 5);
 
-async function isAnotherInvestmentRoundReasonable() {
-  console.log(
-    "checking if another investment round is economically reasonable"
-  );
-  // if (transactionFeesForNextRound > 10 % of the transaction amount || health factor (see aave.com) < 1.14) {
-  //     ... return false
-  //   } else {
-  //     ... return true
-  //   }
-
-  return Promise.resolve(true);
-}
-
-async function borrowUSDollarStableCoin() {
-  console.log("borrowing US Dollar stable coin");
-}
-
-async function swapUSDollarStableCoinToCryptoMoney() {
-  console.log("swapping USDollarStableCoin to ETH");
-
-  const receipt = await swapStableCoinToEth("USDC", 1, wallet);
-  console.log('here we are')
-  console.log(receipt);
-}
-
-async function depositCryptoMoneyToAave() {
-  console.log("depositing crypto money to aave.com");
-}
