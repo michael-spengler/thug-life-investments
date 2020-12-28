@@ -50,8 +50,8 @@ async function borrowUSDollarStableCoin() {
 async function swapUSDollarStableCoinToCryptoMoney() {
   console.log("swapping USDollarStableCoin to ETH");
 
-  const receipt = await ethToTokens("USDC", 0.1, wallet);
-
+  const receipt = await ethToTokens("USDC", 0.01, wallet);
+  console.log('here we are')
   console.log(receipt);
 }
 

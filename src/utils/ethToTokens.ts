@@ -63,17 +63,20 @@ export const ethToTokens = async (
     }
   );
 
+  
   const tx = await uniswapContractWithSigner.swapExactETHForTokens(
     amountOutMinBigNumber.toHexString(),
     path,
     await wallet.getAddress(),
     deadline,
     {
-      gasPrice: 30e9,
+      gasPrice: await wallet.getGasPrice(),
       gasLimit: estimateGas.mul(ethers.BigNumber.from("2")),
       value: inputAmountBigNumber.toHexString(),
     }
   );
+
+  console.log(tx.hash);
 
   const receipt = await tx.wait();
   console.log(receipt.blockNumber, tx.hash);
