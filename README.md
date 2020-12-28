@@ -1,22 +1,9 @@
 # Thug Life Investments
+With this "Investment Protocol" you can increase your Ether holdings over time as long as prices go up.
 
 ## Scenario:
+Please check the [index.ts](https://github.com/michael-spengler/thug-life-investments/blob/main/src/index.ts) to understand the scenario.
 
-1. Deposit Ether to aave.com (v2)
-2. Ensure it is available as collateral
-3. Borrow USDC (choose variable interest rate)
-4. Swap USDC to Ether
-5. Add the new Ether to aave.com also using this as collateral
-
-```
-if (transactionFeesForNextRound > 10 % of the transaction amount || health factor (see aave.com) < 1.14) {
-  sleep some minutes and check again
-} else {
-  Repeat steps 3 - 6
-}
-```
-
-Background: With this you can increase your Ether holdings over time as long as prices go up.
 
 ## Assumptions
 
