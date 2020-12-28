@@ -1,6 +1,6 @@
 require("dotenv").config();
 import { ethers } from "ethers";
-import { ethToTokens } from "./utils/ethToTokens";
+import { swapStableCoinToEth } from "./utils/swap-stable-coin-to-eth";
 
 if (process.env.ACCOUNT === undefined || process.env.ACCOUNT.length < 10) {
   throw new Error(
@@ -50,7 +50,7 @@ async function borrowUSDollarStableCoin() {
 async function swapUSDollarStableCoinToCryptoMoney() {
   console.log("swapping USDollarStableCoin to ETH");
 
-  const receipt = await ethToTokens("USDC", 0.01, wallet);
+  const receipt = await swapStableCoinToEth("USDC", 1, wallet);
   console.log('here we are')
   console.log(receipt);
 }
