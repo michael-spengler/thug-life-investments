@@ -1,6 +1,6 @@
-
-
-export const ensureEnvironmentIsReasonablyConfigured = async (): Promise<any | undefined> => {
+export const ensureEnvironmentIsReasonablyConfigured = async (): Promise<
+  any | undefined
+> => {
   console.log("ensuring the environment is reasonably configured...");
 
   if (process.env.ACCOUNT === undefined || process.env.ACCOUNT.length < 10) {
@@ -12,5 +12,4 @@ export const ensureEnvironmentIsReasonablyConfigured = async (): Promise<any | u
       `optimizing crypto investments for wallet: ${process.env.ACCOUNT} on a regular basis`
     );
   }
-  
 };

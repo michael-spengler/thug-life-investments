@@ -19,20 +19,27 @@ export const swapFiatStableCoinToEth = async (
   ethersWallet: ethers.Wallet
 ): Promise<any | undefined> => {
   console.log("swapping Fiat Stable Coin to ETH");
-  console.log('stableCoinSymbol')
-  console.log(stableCoinSymbol)
-  console.log('amount')
-  console.log(amount)
+  console.log("stableCoinSymbol");
+  console.log(stableCoinSymbol);
+  console.log("amount");
+  console.log(amount);
   const fixedAmount = ethers.utils.parseEther(amount.toString());
 
-  console.log('fixedAmount')
-  console.log(fixedAmount)
-  console.log('wallet.address')
-  console.log(ethersWallet.address)
+  console.log("fixedAmount");
+  console.log(fixedAmount);
+  console.log("wallet.address");
+  console.log(ethersWallet.address);
 
-  const stableCoinToken = new Token(ChainId.MAINNET, tokens[stableCoinSymbol].address, 18);
+  const stableCoinToken = new Token(
+    ChainId.MAINNET,
+    tokens[stableCoinSymbol].address,
+    18
+  );
 
-  const pair = await Fetcher.fetchPairData(stableCoinToken, WETH[ChainId.MAINNET]);
+  const pair = await Fetcher.fetchPairData(
+    stableCoinToken,
+    WETH[ChainId.MAINNET]
+  );
   const route = new Route([pair], WETH[ChainId.MAINNET]);
 
   const trade = new Trade(
@@ -63,8 +70,8 @@ export const swapFiatStableCoinToEth = async (
   ]);
   const uniswapContractWithSigner = uniswapContract.connect(ethersWallet);
 
-  console.log('amountOutMinBigNumber')
-  console.log(amountOutMinBigNumber)
+  console.log("amountOutMinBigNumber");
+  console.log(amountOutMinBigNumber);
   // const estimateGas = await uniswapContractWithSigner.estimateGas.swapExactETHForTokens(
   //   amountOutMinBigNumber.toHexString(),
   //   path,
@@ -75,7 +82,6 @@ export const swapFiatStableCoinToEth = async (
   //   }
   // );
 
-  
   // const tx = await uniswapContractWithSigner.swapExactETHForTokens(
   //   amountOutMinBigNumber.toHexString(),
   //   path,
@@ -93,5 +99,4 @@ export const swapFiatStableCoinToEth = async (
   // const receipt = await tx.wait();
   // console.log(receipt.blockNumber, tx.hash);
   // return receipt;
-
 };

@@ -7,17 +7,14 @@ import { ensureEnvironmentIsReasonablyConfigured } from "./utils/ensure-environm
 import { isAnInvestmentRoundReasonable } from "./utils/is-an-investment-round-reasonable";
 import { swapFiatStableCoinToEth } from "./utils/swap-fiat-stable-coin-to-eth";
 
+ensureEnvironmentIsReasonablyConfigured();
 
-ensureEnvironmentIsReasonablyConfigured()
-
-
-const provider = getInfuraProvider()
+const provider = getInfuraProvider();
 const ethersWallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-
 
 setInterval(async () => {
   if (await isAnInvestmentRoundReasonable()) {
-    await executeInvestmentRound()
+    await executeInvestmentRound();
   } else {
     console.log(
       "At the moment it does not make sense to trigger another investment round."
@@ -25,13 +22,11 @@ setInterval(async () => {
   }
 }, 1000 * 5);
 
-
 async function executeInvestmentRound(): Promise<void> {
   await borrowFiatStableCoin();
   await swapFiatStableCoinToEth("DAI", 1, ethersWallet);
   await depositCryptoMoneyToAave();
 }
-
 
 function getInfuraProvider() {
   return new ethers.providers.InfuraProvider(

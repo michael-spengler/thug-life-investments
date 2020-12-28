@@ -1,9 +1,10 @@
 # Thug Life Investments
+
 With this "Investment Protocol" you can increase your Ether holdings over time as long as prices go up.
 
 ## Scenario:
-Please check the [index.ts](https://github.com/michael-spengler/thug-life-investments/blob/main/src/index.ts) to understand the scenario.
 
+Please check the [index.ts](https://github.com/michael-spengler/thug-life-investments/blob/main/src/index.ts) to understand the scenario.
 
 ## Assumptions
 
