@@ -1,14 +1,6 @@
 require("dotenv").config();
-const {
-  ChainId,
-  Token,
-  WETH,
-  Fetcher,
-  Trade,
-  Route,
-  TokenAmount,
-  TradeType,
-} = require("@uniswap/sdk");
+import { ethers } from "ethers";
+import { ethToTokens } from "./utils/ethToTokens";
 
 if (process.env.ACCOUNT === undefined || process.env.ACCOUNT.length < 10) {
   throw new Error(
@@ -19,6 +11,12 @@ if (process.env.ACCOUNT === undefined || process.env.ACCOUNT.length < 10) {
     `optimizing crypto investments for wallet: ${process.env.ACCOUNT} on a regular basis`
   );
 }
+
+const provider = new ethers.providers.InfuraProvider(
+  "mainnet",
+  process.env.INFURA_PROJECT_ID
+);
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 setInterval(async () => {
   if (await isAnotherInvestmentRoundReasonable()) {
@@ -52,20 +50,14 @@ async function borrowUSDollarStableCoin() {
 async function swapUSDollarStableCoinToCryptoMoney() {
   console.log("swapping USDollarStableCoin to ETH");
 
-  const DAI = new Token(
-    ChainId.MAINNET,
-    "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-    18
+  const receipt = await ethToTokens(
+    "USDC",
+    0.1,
+    wallet.address,
+    provider.getSigner(wallet.address)
   );
 
-  const pair = await Fetcher.fetchPairData(DAI, WETH[DAI.chainId]);
-
-  console.log(pair);
-  // const route = new Route([pair], WETH[DAI.chainId])
-
-  // const amountIn = '1000000000000000000' // 1 WETH
-
-  // const trade = new Trade(route, new TokenAmount(WETH[DAI.chainId], amountIn), TradeType.EXACT_INPUT)
+  console.log(receipt);
 }
 
 async function depositCryptoMoneyToAave() {
