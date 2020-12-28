@@ -16,7 +16,7 @@ import contracts from "../constants/contracts.json";
 export const swapFiatStableCoinToEth = async (
   stableCoinSymbol: "DAI" | "USDC",
   amount: number,
-  wallet: ethers.Wallet
+  ethersWallet: ethers.Wallet
 ): Promise<any | undefined> => {
   console.log("swapping Fiat Stable Coin to ETH");
   console.log('stableCoinSymbol')
@@ -28,7 +28,7 @@ export const swapFiatStableCoinToEth = async (
   console.log('fixedAmount')
   console.log(fixedAmount)
   console.log('wallet.address')
-  console.log(wallet.address)
+  console.log(ethersWallet.address)
 
   const stableCoinToken = new Token(ChainId.MAINNET, tokens[stableCoinSymbol].address, 18);
 
@@ -61,7 +61,7 @@ export const swapFiatStableCoinToEth = async (
   const uniswapContract = new ethers.Contract(contracts.uniswap.address, [
     contracts.uniswap.functions.swapExactETHForTokens,
   ]);
-  const uniswapContractWithSigner = uniswapContract.connect(wallet);
+  const uniswapContractWithSigner = uniswapContract.connect(ethersWallet);
 
   console.log('amountOutMinBigNumber')
   console.log(amountOutMinBigNumber)
