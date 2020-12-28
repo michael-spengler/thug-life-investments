@@ -18,7 +18,6 @@ if (transactionFeesForNextRound > 10 % of the transaction amount || health facto
 
 Background: With this you can increase your Ether holdings over time as long as prices go up.
 
-
 ## Assumptions
 
 1. If many actors apply this or a similar investment pattern, the interest rates might rise until a point where the algorithm would stop

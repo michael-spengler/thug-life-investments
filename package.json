@@ -1,28 +1,18 @@
 {
+  "private": true,
   "name": "thug-life-investments",
-  "version": "0.0.1",
-  "description": "",
-  "main": "exploring-the-uniswap-sdk.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/michael-spengler/thug-life-investments.git"
-  },
-  "keywords": [
-    "ethereum"
-  ],
-  "author": "michael spengler",
+  "version": "1.0.0",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/michael-spengler/thug-life-investments/issues"
+  "scripts": {
+    "fmt": "prettier --write ."
   },
-  "homepage": "https://github.com/michael-spengler/thug-life-investments#readme",
   "dependencies": {
     "@uniswap/sdk": "^3.0.3",
     "dotenv": "^8.2.0",
-    "ethers": "^5.0.24",
-    "web3": "^1.3.1"
+    "ethers": "^5.0.24"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1",
+    "typescript": "^4.1.3"
   }
 }
