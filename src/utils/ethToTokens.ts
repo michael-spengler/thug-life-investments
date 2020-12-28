@@ -48,10 +48,9 @@ export const ethToTokens = async (
 
   const deadline = Math.floor(Date.now() / 1000) + 60 * 2;
 
-  const uniswapContract = new ethers.Contract(
-    contracts.uniswap.address,
-    contracts.uniswap.functions.swapExactETHForTokens
-  );
+  const uniswapContract = new ethers.Contract(contracts.uniswap.address, [
+    contracts.uniswap.functions.swapExactETHForTokens,
+  ]);
   const uniswapContractWithSigner = uniswapContract.connect(wallet);
 
   const estimateGas = await uniswapContractWithSigner.estimateGas.swapExactETHForTokens(
