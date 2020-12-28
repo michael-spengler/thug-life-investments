@@ -16,8 +16,7 @@ import contracts from "../constants/contracts.json";
 export const ethToTokens = async (
   name: "DAI" | "USDC",
   amount: number,
-  address: string,
-  signer
+  wallet: ethers.Wallet
 ): Promise<string> => {
   const fixedAmount = ethers.utils.parseEther(amount.toString());
 
@@ -53,12 +52,12 @@ export const ethToTokens = async (
     contracts.uniswap.address,
     contracts.uniswap.functions.swapExactETHForTokens
   );
-  const uniswapContractWithSigner = uniswapContract.connect(signer);
+  const uniswapContractWithSigner = uniswapContract.connect(wallet);
 
   const estimateGas = await uniswapContractWithSigner.estimateGas.swapExactETHForTokens(
     amountOutMinBigNumber.toHexString(),
     path,
-    address,
+    await wallet.getAddress(),
     deadline,
     {
       value: inputAmountBigNumber.toHexString(),
@@ -68,7 +67,7 @@ export const ethToTokens = async (
   const tx = await uniswapContractWithSigner.swapExactETHForTokens(
     amountOutMinBigNumber.toHexString(),
     path,
-    address,
+    await wallet.getAddress(),
     deadline,
     {
       gasPrice: 30e9,
