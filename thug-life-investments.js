@@ -1,13 +1,14 @@
 require('dotenv').config()
 const { ChainId, Token, WETH, Fetcher, Trade, Route, TokenAmount, TradeType } = require('@uniswap/sdk')
 
-// 0x4396A292512AA418087645B56a3a76333Bd10e28
-
-// working with aave's smart contracts directly = ?
-
+if (process.env.ACCOUNT === undefined || process.env.ACCOUNT.length < 10) {
+    throw new Error(`Please copy the .env.example file to .env and add your data for the wallet you want to optimize.`)
+} else {
+    console.log(`optimizing crypto investments for wallet: ${process.env.ACCOUNT} on a regular basis`)
+}
 
 setInterval(async () => {
-
+    
     await checkIfAnotherRoundIsReasonable()
     await borrowUSDC()
     await swapDAIToETH()
