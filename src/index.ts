@@ -1,16 +1,22 @@
 require("dotenv").config();
 
-import { ethers } from "ethers";
 import { borrowFiatStableCoin } from "./utils/borrow-fiat-stable-coin";
 import { depositCryptoMoneyToAave } from "./utils/deposit-crypto-money-to-aave";
 import { ensureEnvironmentIsReasonablyConfigured } from "./utils/ensure-environment-reasonably-configured";
 import { isAnInvestmentRoundReasonable } from "./utils/is-an-investment-round-reasonable";
 import { swapFiatStableCoinToEth } from "./utils/swap-fiat-stable-coin-to-eth";
+import { daiJSONInterface } from "./constants/dai-json-interface";
+import { uniswapJSONInterface } from "./constants/uniswap-json-interface";
+import tokens from "./constants/tokens.json";
+import contracts from "./constants/contracts.json";
+
+const Web3 = require('web3')
 
 ensureEnvironmentIsReasonablyConfigured();
 
-const provider = getInfuraProvider();
-const ethersWallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+const web3ViaInfuraProvider = getwWeb3ViaInfuraProvider();
+const daiContract = getDAIContract(web3ViaInfuraProvider)
+const uniswapV2Router02Contract = getUniswapContract(web3ViaInfuraProvider)
 
 setInterval(async () => {
   if (await isAnInvestmentRoundReasonable()) {
@@ -24,13 +30,37 @@ setInterval(async () => {
 
 async function executeInvestmentRound(): Promise<void> {
   await borrowFiatStableCoin();
-  await swapFiatStableCoinToEth("DAI", 1, ethersWallet);
+  await swapFiatStableCoinToEth(web3ViaInfuraProvider, daiContract, process.env.ACCOUNT, uniswapV2Router02Contract);
   await depositCryptoMoneyToAave();
 }
 
-function getInfuraProvider() {
-  return new ethers.providers.InfuraProvider(
-    "mainnet",
-    process.env.INFURA_PROJECT_ID
-  );
+function getwWeb3ViaInfuraProvider(): any {
+
+  const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`))
+
+  return web3
+}
+
+function getDAIContract(provider: any) {
+  var Contract = require('web3-eth-contract');
+
+  Contract.setProvider(provider);
+
+  var contract = new Contract(daiJSONInterface, tokens.DAI.address);
+
+  return contract
+
+}
+
+function getUniswapContract(provider: any) {
+  var Contract = require('web3-eth-contract');
+
+  Contract.setProvider(provider);
+
+  const uniswapContractAddress = contracts.uniswap.address
+
+  var contract = new Contract(uniswapJSONInterface, uniswapContractAddress);
+
+  return contract
+
 }
