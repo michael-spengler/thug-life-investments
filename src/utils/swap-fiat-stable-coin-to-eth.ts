@@ -57,5 +57,5 @@ export const swapDAIToETH = (async() => {
   console.log(tx.hash)
 })
 
-swapDAIToETH()
+// swapDAIToETH() // will be called by index.ts in the overall scenario
 
