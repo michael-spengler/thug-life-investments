@@ -6,8 +6,6 @@ With this "Investment Protocol" you can increase your Ether holdings over time a
 
 Please check the [index.ts](https://github.com/michael-spengler/thug-life-investments/blob/main/src/index.ts) to understand the scenario.
 
-Please check the [index.ts](https://github.com/michael-spengler/thug-life-investments/blob/main/src/index.ts) to understand the scenario.
-
 ## Assumptions
 
 1. If many actors apply this or a similar investment pattern, the interest rates might rise until a point where the algorithm would stop
