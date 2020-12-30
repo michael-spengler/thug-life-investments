@@ -5,18 +5,9 @@ import { depositCryptoMoneyToAave } from "./utils/deposit-crypto-money-to-aave";
 import { ensureEnvironmentIsReasonablyConfigured } from "./utils/ensure-environment-reasonably-configured";
 import { isAnInvestmentRoundReasonable } from "./utils/is-an-investment-round-reasonable";
 import { swapDAIToETH } from "./utils/swap-fiat-stable-coin-to-eth";
-import { daiJSONInterface } from "./constants/dai-json-interface";
-import { uniswapJSONInterface } from "./constants/uniswap-json-interface";
-// import tokens from "./constants/tokens.json";
-// import contracts from "./constants/contracts.json";
 
-const Web3 = require('web3')
 
 ensureEnvironmentIsReasonablyConfigured();
-
-const web3ViaInfuraProvider = getwWeb3ViaInfuraProvider();
-const daiContract = getDAIContract(web3ViaInfuraProvider)
-const uniswapV2Router02Contract = getUniswapContract(web3ViaInfuraProvider)
 
 setInterval(async () => {
   if (await isAnInvestmentRoundReasonable()) {
@@ -34,31 +25,3 @@ async function executeInvestmentRound(): Promise<void> {
   await depositCryptoMoneyToAave();
 }
 
-function getwWeb3ViaInfuraProvider(): any {
-
-  const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`))
-
-  return web3
-}
-
-function getDAIContract(provider: any) {
-  var Contract = require('web3-eth-contract');
-
-  Contract.setProvider(provider);
-
-  var contract = new Contract(daiJSONInterface, '0x6B175474E89094C44Da98b954EedeAC495271d0F');
-
-  return contract
-
-}
-
-function getUniswapContract(provider: any) {
-  var Contract = require('web3-eth-contract');
-
-  Contract.setProvider(provider);
-
-  var contract = new Contract(uniswapJSONInterface, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
-
-  return contract
-
-}
