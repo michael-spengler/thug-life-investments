@@ -4,11 +4,11 @@ import { borrowFiatStableCoin } from "./utils/borrow-fiat-stable-coin";
 import { depositCryptoMoneyToAave } from "./utils/deposit-crypto-money-to-aave";
 import { ensureEnvironmentIsReasonablyConfigured } from "./utils/ensure-environment-reasonably-configured";
 import { isAnInvestmentRoundReasonable } from "./utils/is-an-investment-round-reasonable";
-import { swapFiatStableCoinToEth } from "./utils/swap-fiat-stable-coin-to-eth";
+import { swapDAIToETH } from "./utils/swap-fiat-stable-coin-to-eth";
 import { daiJSONInterface } from "./constants/dai-json-interface";
 import { uniswapJSONInterface } from "./constants/uniswap-json-interface";
-import tokens from "./constants/tokens.json";
-import contracts from "./constants/contracts.json";
+// import tokens from "./constants/tokens.json";
+// import contracts from "./constants/contracts.json";
 
 const Web3 = require('web3')
 
@@ -30,7 +30,7 @@ setInterval(async () => {
 
 async function executeInvestmentRound(): Promise<void> {
   await borrowFiatStableCoin();
-  await swapFiatStableCoinToEth(web3ViaInfuraProvider, daiContract, process.env.ACCOUNT, uniswapV2Router02Contract);
+  await swapDAIToETH();
   await depositCryptoMoneyToAave();
 }
 
@@ -46,7 +46,7 @@ function getDAIContract(provider: any) {
 
   Contract.setProvider(provider);
 
-  var contract = new Contract(daiJSONInterface, tokens.DAI.address);
+  var contract = new Contract(daiJSONInterface, '0x6B175474E89094C44Da98b954EedeAC495271d0F');
 
   return contract
 
@@ -57,9 +57,7 @@ function getUniswapContract(provider: any) {
 
   Contract.setProvider(provider);
 
-  const uniswapContractAddress = contracts.uniswap.address
-
-  var contract = new Contract(uniswapJSONInterface, uniswapContractAddress);
+  var contract = new Contract(uniswapJSONInterface, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D');
 
   return contract
 
