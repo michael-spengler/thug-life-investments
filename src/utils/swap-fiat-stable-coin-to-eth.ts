@@ -1,60 +1,61 @@
+require("dotenv").config();
+
 import {
-  ChainId,
   Fetcher,
   Percent,
   Route,
-  Token,
   TokenAmount,
   Trade,
   TradeType,
   WETH,
 } from "@uniswap/sdk";
-import tokens from "../constants/tokens.json";
+import { ethers } from "ethers";
+import { uniswapJSONInterface } from "../constants/uniswap-json-interface";
+import { daiJSONInterface } from "../constants/dai-json-interface";
 
-export const swapFiatStableCoinToEth = async (web3ViaInfuraProvider: any, daiContract: any, walletAddress: string, uniswapV2Router02Contract: any): Promise<string> => {
+console.log('los gehts')
 
-  const availableDAIToSwap = await daiContract.methods.balanceOf(walletAddress).call()
-  console.log(`I found ${availableDAIToSwap / 1000000000000000000} DAI in wallet ${walletAddress} - ready to swap`)
+const daiTokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
 
-  const daiToken = new Token(ChainId.MAINNET, tokens.DAI.address, 18);
+export const swapDAIToETH = (async() => {
+  const dai = (await Fetcher.fetchTokenData(1, daiTokenAddress))
+  const pair = await Fetcher.fetchPairData(dai, WETH[1])
+  const route = new Route([pair], dai)
+  const signer = new ethers.Wallet(process.env.PRIVATE_KEY)
+  const provider = ethers.getDefaultProvider('mainnet', {infura: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`})
+  const account = signer.connect(provider)
 
-  const pair = await Fetcher.fetchPairData(daiToken, WETH[ChainId.MAINNET]);
-  const route = new Route([pair], daiToken);
+  const daiSmartContract = new ethers.Contract('0x6B175474E89094C44Da98b954EedeAC495271d0F', daiJSONInterface, account)
+  const balanceOfDaiOnAccount = await daiSmartContract.balanceOf(process.env.ACCOUNT)
+  console.log(balanceOfDaiOnAccount)
 
-  const trade = new Trade(
-    route,
-    new TokenAmount(daiToken, availableDAIToSwap.toString()),
-    TradeType.EXACT_INPUT
-  );
+  const trade = new Trade(route, new TokenAmount(dai, balanceOfDaiOnAccount), TradeType.EXACT_INPUT)
+  console.log(route.midPrice.toSignificant(6))
+  console.log(trade.executionPrice.toSignificant(6))
 
-
-  console.log('nextMidPrice')
-  console.log(trade.nextMidPrice.toSignificant(6))
-
-  const slippageTolerance = new Percent("50", "10000");
+  const slippageTolerance = new Percent('50', '10000')
   const amountOutMin = trade.minimumAmountOut(slippageTolerance).raw
-  const path = [tokens.DAI.address, WETH[ChainId.MAINNET].address]
+
+  console.log(amountOutMin.toString())
+
+  console.log(ethers.BigNumber.from("42"))
+
+  const path = [daiTokenAddress, WETH[1].address]
+
   const deadline = Math.floor(Date.now() / 1000) + 60 * 2
 
-  var BN = web3ViaInfuraProvider.utils.BN;
-
-  console.log('till here things seem so cool :)')
-
-  const tx = await uniswapV2Router02Contract.methods.swapExactTokensForETH(
-    new BN(availableDAIToSwap),
-    new BN(amountOutMin),
+  const uniswapSmartContract = new ethers.Contract('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', uniswapJSONInterface, account)
+  
+  const tx = await uniswapSmartContract.swapExactTokensForETH(
+    balanceOfDaiOnAccount,
+    amountOutMin.toString(),
     path,
-    walletAddress,
+    process.env.ACCOUNT,
     deadline
-  ).call()
+  )
 
   console.log(tx.hash)
+})
 
-  const receipt = await tx.wait()
-
-  console.log(receipt)
-
-  return Promise.resolve("")
-
-};
+swapDAIToETH()
 
