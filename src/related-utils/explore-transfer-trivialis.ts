@@ -15,7 +15,7 @@ export const transfer = async () => {
                 gasPrice: web3.utils.toHex(gasPrice),
                 from: process.env.SOURCE_ACCOUNT,
                 to: process.env.ACCOUNT,
-                value: 0.07,
+                value: 0.07 * 1000000000000000000,
                 chainId: web3.utils.toHex(1),
             }
             let tx = new Tx(txParams);

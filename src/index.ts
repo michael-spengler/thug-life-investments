@@ -11,11 +11,10 @@ ensureEnvironmentIsReasonablyConfigured();
 
 setInterval(async () => {
   if (await isAnInvestmentRoundReasonable()) {
-    await executeInvestmentRound();
+    console.log("starting an investmentround.");
+    // await executeInvestmentRound();
   } else {
-    console.log(
-      "At the moment it does not make sense to trigger another investment round."
-    );
+    console.log("At the moment it does not make sense to trigger another investment round.");
   }
 }, 1000 * 5);
 
